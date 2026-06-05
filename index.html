@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cucas da Tefa - Novo Pedido</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --cor-principal: #4A2E1B; --cor-fundo: #FDFBF7; --cor-destaque: #8B5A2B; }
+    body { background-color: var(--cor-fundo); color: var(--cor-principal); font-family: 'Segoe UI', sans-serif; }
+    .btn-custom { background-color: var(--cor-principal); color: white; transition: all 0.3s; }
+    .btn-custom:hover { background-color: var(--cor-destaque); }
+  </style>
+</head>
+<body class="p-4 flex flex-col items-center justify-center min-h-screen pb-20 relative">
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbx8AcrZtvmca_5PpKJ4l_LU3Dbaq7OXO1JtRjzXwoDxjI7DR-IhueFBSqOitzEnMKIwiw/exec";
+  </script>
+
+  <header class="text-center mb-6 flex flex-col items-center justify-center">
+    <div class="relative w-36 h-36 sm:w-44 sm:h-44 mb-3 rounded-full overflow-hidden shadow-lg border-2 border-amber-900/20 bg-white flex items-center justify-center">
+      <img src="Design sem nome.png" alt="Logo Oficial Cucas da Tefa" class="w-full h-full object-cover" onerror="this.src='https://i.imgur.com/jHZlJde.jpeg'">
+    </div>
+    <h1 class="text-3xl font-black tracking-widest uppercase text-[#4A2E1B]" style="font-family: 'Arial Black', Gadget, sans-serif;">
+      Cucas da Tefa
+    </h1>
+    <p class="text-xs sm:text-sm italic font-bold text-amber-800 tracking-wide mt-1">
+      Sabor Caseiro • Feitas com Amor ❤️
+    </p>
+  </header>
+
+  <div class="bg-white p-6 rounded-xl shadow-lg border border-amber-900/10 w-full max-w-lg">
+    <h2 class="text-xl font-bold mb-4 border-b pb-2 flex items-center gap-2">✨ Registrar Novo Pedido</h2>
+    <form id="formPedido" onsubmit="event.preventDefault(); cadastrarPedido();">
+      
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1">Nome do Cliente:</label>
+        <input type="text" id="nomeCliente" required class="w-full border border-amber-900/30 rounded p-2.5 focus:outline-amber-600">
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1">Sabor da Cuca:</label>
+        <select id="saborCuca" class="w-full border border-amber-900/30 rounded p-2.5 bg-white">
+          <option value="Cuca Comum">Cuca Clássica (Sem recheio)</option>
+          <option value="Cuca de Banana">Cuca de Banana</option>
+          <option value="Cuca de Goiabada">Cuca de Goiabada</option>
+          <option value="Cuca de Doce de Leite">Cuca de Doce de Leite</option>
+          <option value="Cuca de Chocolate">Cuca de Chocolate</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1">Data de Entrega:</label>
+        <input type="date" id="dataEntrega" required class="w-full border border-amber-900/30 rounded p-2.5">
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1">Forma de Pagamento:</label>
+        <select id="formaPagamento" class="w-full border border-amber-900/30 rounded p-2.5 bg-white">
+          <option value="Pix">Pix</option>
+          <option value="Crédito">Crédito</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1">Status do Pagamento:</label>
+        <div class="flex gap-6 mt-1">
+          <label class="flex items-center gap-1.5"><input type="radio" name="statusPagto" value="Pago" checked class="w-4 h-4 accent-amber-800"> Pago</label>
+          <label class="flex items-center gap-1.5"><input type="radio" name="statusPagto" value="Pendente de Pagamento" class="w-4 h-4 accent-amber-800"> Pendente</label>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-1">Status da Entrega:</label>
+        <div class="flex gap-6 mt-1">
+          <label class="flex items-center gap-1.5"><input type="radio" name="statusEntrega" value="Encomendada" checked class="w-4 h-4 accent-amber-800"> Encomendada</label>
+          <label class="flex items-center gap-1.5"><input type="radio" name="statusEntrega" value="Entregue" class="w-4 h-4 accent-amber-800"> Entregue</label>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full btn-custom font-bold py-3 px-4 rounded-lg shadow uppercase tracking-wider text-sm">Salvar Pedido</button>
+    </form>
+  </div>
+
+  <div class="fixed bottom-4 right-4 z-50">
+    <button onclick="irParaPainel()" class="bg-white text-xs font-bold border border-amber-900/40 px-4 py-2.5 rounded-xl hover:bg-amber-50 active:bg-amber-100 transition flex items-center gap-2 shadow-lg text-amber-950 whitespace-nowrap">
+      👑 Painel Admin
+    </button>
+  </div>
+
+  <script>
+    function cadastrarPedido() {
+      const nome = document.getElementById("nomeCliente").value;
+      const sabor = document.getElementById("saborCuca").value;
+      const dataEntrega = document.getElementById("dataEntrega").value;
+      const pagamento = document.getElementById("formaPagamento").value;
+      const statusPagto = document.querySelector('input[name="statusPagto"]:checked').value;
+      const statusEntrega = document.querySelector('input[name="statusEntrega"]:checked').value;
+
+      const payload = {
+        acao: "salvarPedido",
+        dados: { nome, sabor, dataEntrega, pagamento, statusPagto, statusEntrega }
+      };
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(resposta => {
+         if(resposta.success) {
+           alert("Pedido da Tefa salvo com total sucesso!");
+           document.getElementById("formPedido").reset();
+         } else {
+           alert("Erro ao salvar pedido: " + resposta.error);
+         }
+      })
+      .catch(err => {
+         console.error("Erro na requisição:", err);
+         alert("Não foi possível conectar ao servidor.");
+      });
+    }
+
+    // Navegação local para a outra página no GitHub
+    function irParaPainel() {
+      window.location.href = 'PainelAdmin.html';
+    }
+  </script>
+</body>
+</html>
