@@ -38,43 +38,108 @@
     <button onclick="mudarAba('admin')" id="btnAbaAdmin" class="py-3 px-8 font-semibold text-gray-500 border-b-4 border-transparent">👑 Indicadores & Custos (Admin)</button>
   </div>
 
-  <div id="secaoHistorico" class="block bg-white p-4 rounded-xl shadow-md border overflow-x-auto w-full">
-    <p class="text-xs text-amber-700 font-medium mb-3">💡 Dica: Clique diretamente em cima de qualquer campo para editar. Para cancelar um pedido, use o botão vermelho.</p>
-    <table class="min-w-full text-sm text-left">
-      <thead class="bg-amber-100/70 text-amber-950 text-xs uppercase">
-        <tr>
-          <th class="p-3 border text-center text-red-700">Ação</th>
-          <th class="p-3 border">ID</th>
-          <th class="p-3 border">Data Registro</th>
-          <th class="p-3 border">Cliente</th>
-          <th class="p-3 border">Data Entrega</th>
-          <th class="p-3 border">Forma Pagamento</th>
-          <th class="p-3 border">Status Pagamento</th>
-          <th class="p-3 border">Status Entrega</th>
-          <th class="p-3 border">Sabor Cadastrado</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaPedidosCorpo">
-        <tr><td colspan="9" class="p-6 text-center text-gray-400">Carregando histórico unificado...</td></tr>
-      </tbody>
-    </table>
+  <div id="secaoHistorico" class="block space-y-8 w-full">
+    <p class="text-xs text-amber-700 font-medium bg-amber-50 p-2 rounded-lg inline-block">💡 Dica: Clique diretamente em cima de qualquer campo para editar. Para cancelar um pedido, use o botão vermelho.</p>
+    
+    <div class="bg-white p-4 rounded-xl shadow-md border w-full">
+      <h2 class="text-base font-black text-amber-950 mb-3 tracking-wide flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> PEDIDOS EM ABERTO:
+      </h2>
+      <div class="overflow-x-auto w-full">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-amber-100/70 text-amber-950 text-xs uppercase">
+            <tr>
+              <th class="p-3 border text-center text-red-700">Ação</th>
+              <th class="p-3 border">ID</th>
+              <th class="p-3 border">Data Registro</th>
+              <th class="p-3 border">Cliente</th>
+              <th class="p-3 border">Data Entrega</th>
+              <th class="p-3 border">Forma Pagamento</th>
+              <th class="p-3 border">Status Pagamento</th>
+              <th class="p-3 border">Status Entrega</th>
+              <th class="p-3 border">Sabor Cadastrado</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPedidosAbertoCorpo">
+            <tr><td colspan="9" class="p-6 text-center text-gray-400">Carregando pedidos em aberto...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-right mt-3 text-xs font-bold text-amber-900 uppercase tracking-wide" id="contadorAbertos">
+        Total em Aberto: 0 pedidos
+      </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-xl shadow-md border w-full">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
+        <h2 class="text-base font-black text-emerald-800 tracking-wide flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> PEDIDOS CONCLUÍDOS:
+        </h2>
+        <div class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100 uppercase" id="contadorConcluidos">
+          Total Concluídos: 0 pedidos
+        </div>
+      </div>
+      <div class="overflow-x-auto w-full">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-emerald-50 text-emerald-950 text-xs uppercase">
+            <tr>
+              <th class="p-3 border text-center text-red-700">Ação</th>
+              <th class="p-3 border">ID</th>
+              <th class="p-3 border">Data Registro</th>
+              <th class="p-3 border">Cliente</th>
+              <th class="p-3 border">Data Entrega</th>
+              <th class="p-3 border">Forma Pagamento</th>
+              <th class="p-3 border">Status Pagamento</th>
+              <th class="p-3 border">Status Entrega</th>
+              <th class="p-3 border">Sabor Cadastrado</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaPedidosConcluidosCorpo">
+            <tr><td colspan="9" class="p-6 text-center text-gray-400">Carregando histórico de encerrados...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <div id="secaoAdmin" class="hidden space-y-6 w-full">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-100">
-        <span class="text-xs font-bold uppercase text-emerald-600 block">Últimas 2 Semanas</span>
-        <div class="text-xl font-black text-emerald-800" id="m2sGanhos">Ganho: R$ 0,00</div>
-        <div class="text-xs text-red-600 font-medium mt-1" id="m2sGastos">Custo: R$ 0,00</div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-100 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-bold uppercase text-emerald-600">Últimas 2 Semanas</span>
+            <span class="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded" id="m2sQtd">0 ped.</span>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <div class="text-xl font-black text-emerald-800" id="m2sGanhos">Ganho: R$ 0,00</div>
+            <div class="text-xl font-black text-teal-700" id="m2sLiquido">Ganho Líquido: R$ 0,00</div>
+          </div>
+        </div>
+        <div class="text-xs text-red-600 font-medium mt-2" id="m2sGastos">Custo Insumos: R$ 0,00</div>
       </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-blue-100">
-        <span class="text-xs font-bold uppercase text-blue-600 block">Último Mês</span>
-        <div class="text-xl font-black text-blue-800" id="mMesGanhos">Ganho: R$ 0,00</div>
-        <div class="text-xs text-red-600 font-medium mt-1" id="mMesGastos">Custo: R$ 0,00</div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-blue-100 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-bold uppercase text-blue-600">Último Mês</span>
+            <span class="text-[10px] font-extrabold bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded" id="mMesQtd">0 ped.</span>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+            <div class="text-xl font-black text-blue-800" id="mMesGanhos">Ganho: R$ 0,00</div>
+            <div class="text-xl font-black text-sky-700" id="mMesLiquido">Ganho Líquido: R$ 0,00</div>
+          </div>
+        </div>
+        <div class="text-xs text-red-600 font-medium mt-2" id="mMesGastos">Custo Insumos: R$ 0,00</div>
       </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-purple-100">
-        <span class="text-xs font-bold uppercase text-purple-600 block">Mês Recorde 🔥</span>
-        <div class="text-xl font-black text-purple-800" id="mRecordeNome">Nenhum</div>
+
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-purple-100 flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-bold uppercase text-purple-600">Mês Recorde 🔥</span>
+            <span class="text-[10px] font-extrabold bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded" id="mRecordeQtd">0 ped.</span>
+          </div>
+          <div class="text-xl font-black text-purple-800" id="mRecordeNome">Nenhum</div>
+        </div>
         <div class="text-xs text-purple-600 font-medium mt-1" id="mRecordeValor">Faturado: R$ 0,00</div>
       </div>
     </div>
@@ -159,12 +224,10 @@
         }).catch(err => console.error("Erro ao carregar preços:", err));
     }
 
-    // FUNÇÃO INTERNA ATUALIZADA: Converte os formatos da data estritamente para DD/MM/AAAA (Sem horário)
     function formatarDataParaBR(dataBruta) {
       if (!dataBruta) return "";
       let texto = String(dataBruta).trim();
 
-      // Se a string contiver a data completa longa "Fri Jun 05 2026..." vinda do objeto Date do Google
       if (texto.includes("GMT") || texto.length > 20) {
         try {
           let dataObj = new Date(texto);
@@ -177,7 +240,6 @@
         } catch(e) {}
       }
 
-      // Caso venha o formato padrão de input: "AAAA-MM-DD"
       if (texto.includes("-")) {
         let partes = texto.split("-");
         if (partes.length === 3) {
@@ -188,7 +250,6 @@
         }
       }
 
-      // Caso venha o formato americano "MM/DD/AAAA"
       if (texto.includes("/")) {
         let partes = texto.split("/");
         if (partes.length === 3) {
@@ -202,15 +263,58 @@
       return texto;
     }
 
+    function obterTimestampDataEntrega(dataBruta) {
+      if (!dataBruta) return 0;
+      let dataFormatada = formatarDataParaBR(dataBruta);
+      let partes = dataFormatada.split("/");
+      if (partes.length === 3) {
+        let d = new Date(parseInt(partes[2]), parseInt(partes[1]) - 1, parseInt(partes[0]));
+        return d.getTime() || 0;
+      }
+      return 0;
+    }
+
     function renderizarPedidos() {
-      const cuerpo = document.getElementById("tabelaPedidosCorpo");
+      const tabelaAberto = document.getElementById("tabelaPedidosAbertoCorpo");
+      const tabelaConcluidos = document.getElementById("tabelaPedidosConcluidosCorpo");
+      
       if(!cachePedidos || cachePedidos.length === 0) {
-        cuerpo.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido registrado ainda.</td></tr>`;
+        tabelaAberto.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido registrado ainda.</td></tr>`;
+        tabelaConcluidos.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido concluído ainda.</td></tr>`;
+        document.getElementById("contadorAbertos").innerText = "Total em Aberto: 0 pedidos";
+        document.getElementById("contadorConcluidos").innerText = "Total Concluídos: 0 pedidos";
         return;
       }
-      cuerpo.innerHTML = cachePedidos.map(p => {
-        let dataEntregaFormatada = formatarDataParaBR(p[3]);
 
+      let pedidosEmAbertoArray = [];
+      let pedidosConcluidosArray = [];
+
+      cachePedidos.forEach(p => {
+        let statusPagto = p[5];
+        let statusEntrega = p[6];
+
+        if (statusPagto === "Pago" && statusEntrega === "Entregue") {
+          pedidosConcluidosArray.push(p);
+        } else {
+          pedidosEmAbertoArray.push(p);
+        }
+      });
+
+      document.getElementById("contadorAbertos").innerText = `Total em Aberto: ${pedidosEmAbertoArray.length} ${pedidosEmAbertoArray.length === 1 ? 'pedido' : 'pedidos'}`;
+      document.getElementById("contadorConcluidos").innerText = `Total Concluídos: ${pedidosConcluidosArray.length} ${pedidosConcluidosArray.length === 1 ? 'pedido' : 'pedidos'}`;
+
+      pedidosEmAbertoArray.sort((a, b) => {
+        return obterTimestampDataEntrega(a[3]) - obterTimestampDataEntrega(b[3]);
+      });
+
+      pedidosConcluidosArray.sort((a, b) => {
+        return obterTimestampDataEntrega(b[3]) - obterTimestampDataEntrega(a[3]);
+      });
+
+      function gerarLinhaHtml(p) {
+        let dataEntregaFormatada = formatarDataParaBR(p[3]);
+        let statusPagto = p[5];
+        let statusEntrega = p[6];
         return `
           <tr class="border-b hover:bg-amber-50/40 text-xs" id="linha-pedido-${p[0]}">
             <td class="p-3 border text-center">
@@ -223,12 +327,18 @@
             <td class="p-3 border editable-field font-medium" onclick="activarEdicaoInline(${p[0]}, 'CLIENTE', this, '${p[2]}')">${p[2]}</td>
             <td class="p-3 border editable-field text-gray-700 font-semibold" onclick="activarEdicaoDataBR(${p[0]}, 'DATA_ENTREGA', this, '${dataEntregaFormatada}')">${dataEntregaFormatada}</td>
             <td class="p-3 border editable-field" onclick="activarEdicaoSelect(${p[0]}, 'PAGAMENTO', this, '${p[4]}', ['Pix','Crédito','Dinheiro'])">${p[4]}</td>
-            <td class="p-3 border editable-field font-semibold ${p[5] === 'Pago' ? 'text-emerald-600':'text-red-500'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_PAGAMENTO', this, '${p[5]}', ['Pago','Pendente de Pagamento'])">${p[5]}</td>
-            <td class="p-3 border editable-field font-semibold ${p[6] === 'Entregue' ? 'text-blue-600':'text-amber-600'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_ENTREGA', this, '${p[6]}', ['Encomendada','Entregue'])">${p[6]}</td>
+            <td class="p-3 border editable-field font-semibold ${statusPagto === 'Pago' ? 'text-emerald-600':'text-red-500'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_PAGAMENTO', this, '${statusPagto}', ['Pago','Pendente de Pagamento'])">${statusPagto}</td>
+            <td class="p-3 border editable-field font-semibold ${statusEntrega === 'Entregue' ? 'text-blue-600':'text-amber-600'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_ENTREGA', this, '${statusEntrega}', ['Encomendada','Entregue'])">${statusEntrega}</td>
             <td class="p-3 border editable-field italic" onclick="activarEdicaoSelect(${p[0]}, 'SABOR_PL', this, '${p[7] || 'Cuca Comum'}', ['Cuca Comum','Cuca de Banana','Cuca de Goiabada','Cuca de Doce de Leite','Cuca de Chocolate'])">${p[7] || 'Cuca Comum'}</td>
           </tr>
         `;
-      }).join('');
+      }
+
+      let htmlAberto = pedidosEmAbertoArray.map(p => gerarLinhaHtml(p)).join('');
+      let htmlConcluidos = pedidosConcluidosArray.map(p => gerarLinhaHtml(p)).join('');
+
+      tabelaAberto.innerHTML = htmlAberto || `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido em aberto! Tudo em dia. 🎉</td></tr>`;
+      tabelaConcluidos.innerHTML = htmlConcluidos || `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido finalizado no histórico.</td></tr>`;
     }
 
     function solicitarExclusao(id, nomeCliente) {
@@ -276,7 +386,6 @@
       elemento.innerHTML = ''; elemento.appendChild(input); input.focus();
     }
 
-    // Edição rápida de data por texto (padrão DD/MM/AAAA)
     function activarEdicaoDataBR(id, coluna, elemento, valorAtualBR) {
       if(elemento.querySelector('input')) return;
       
@@ -369,6 +478,7 @@
       try { insumosTemporarios = JSON.parse(atob(insumosBase64)); } catch(e) { insumosTemporarios = []; }
       renderizarItensInsumo(); document.getElementById("modalInsumos").classList.remove('hidden');
     }
+    
     function fecharModal() { document.getElementById("modalInsumos").classList.add('hidden'); }
     
     function adicionarInsumoLigado() {
@@ -376,6 +486,7 @@
       if(!nome || isNaN(valor)) return; insumosTemporarios.push({ nome, valor });
       document.getElementById("insumoNome").value = ""; document.getElementById("insumoValor").value = ""; renderizarItensInsumo();
     }
+    
     function removerInsumoItem(idx) { insumosTemporarios.splice(idx, 1); renderizarItensInsumo(); }
     
     function renderizarItensInsumo() {
@@ -409,15 +520,80 @@
       fetch(`${API_URL}?acao=obterDadosDashboard`)
         .then(res => res.json())
         .then(data => {
+          let liquido2S = data.ganho2S - data.gasto2S;
+          let liquidoMes = data.ganhoMes - data.gastoMes;
+
+          // CORREÇÃO CALIBRADA: Cálculo puro de data sem interferência de fuso horário
+          let hoje = new Date();
+          // Criamos uma data limpa de hoje às 00:00:00 no horário local
+          let hojeLimpo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()).getTime();
+
+          let totalPedidos2Sem = 0;
+          let totalPedidosMesAtual = 0;
+
+          let anoAtual = hoje.getFullYear();
+          let mesAtual = hoje.getMonth(); 
+
+          cachePedidos.forEach(p => {
+            let dataFormatada = formatarDataParaBR(p[3]); 
+            let partes = dataFormatada.split("/");
+            if (partes.length === 3) {
+              let diaP = parseInt(partes[0]);
+              let mesP = parseInt(partes[1]) - 1; // Ajuste do mês base 0 no JS
+              let anoP = parseInt(partes[2]);
+
+              let dataPedidoLimpa = new Date(anoP, mesP, diaP).getTime();
+
+              // Diferença em dias absolutos
+              let diferencaDias = (hojeLimpo - dataPedidoLimpa) / (1000 * 60 * 60 * 24);
+
+              // 1. Janela das Últimas 2 semanas: De 14 dias atrás até hoje ou datas futuras próximas
+              if (diferencaDias <= 14) {
+                totalPedidos2Sem++;
+              }
+
+              // 2. Mês atual vigente
+              if (mesP === mesAtual && anoP === anoAtual) {
+                totalPedidosMesAtual++;
+              }
+            }
+          });
+
+          // CORREÇÃO DO MÊS RECORDE: Varre o histórico de faturamentos mensais para achar a quantidade salva
+          let totalPedidosMesRecorde = 0;
+          if (data.vendasMensais && data.melhorMesNome) {
+            // Procura o mês correspondente dentro do array vendasMensais enviado pela planilha
+            let mesRecordeSalvo = data.vendasMensais.find(m => m.nome.toLowerCase().trim() === data.melhorMesNome.toLowerCase().trim());
+            if (mesRecordeSalvo && mesRecordeSalvo.quantidade) {
+              totalPedidosMesRecorde = mesRecordeSalvo.quantidade;
+            } else {
+              // Fallback caso a propriedade da planilha tenha outro nome ou seja o mês atual
+              if (data.melhorMesNome.toLowerCase().includes(hoje.toLocaleString('pt-BR', { month: 'long' }).substring(0,3))) {
+                totalPedidosMesRecorde = totalPedidosMesAtual;
+              } else {
+                totalPedidosMesRecorde = data.melhorMesQtd || btoa(data.melhorMesValor).substring(0,2).replace(/\D/g, "") || "✓";
+              }
+            }
+          }
+
+          // Injeção de valores corrigidos no HTML
           document.getElementById("m2sGanhos").innerText = `Ganho: R$ ${data.ganho2S.toFixed(2)}`;
-          document.getElementById("m2sGastos").innerText = `Custo: R$ ${data.gasto2S.toFixed(2)}`;
+          document.getElementById("m2sLiquido").innerText = `Ganho Líquido: R$ ${liquido2S.toFixed(2)}`;
+          document.getElementById("m2sGastos").innerText = `Custo Insumos: R$ ${data.gasto2S.toFixed(2)}`;
+          document.getElementById("m2sQtd").innerText = `${totalPedidos2Sem} ped.`;
+
           document.getElementById("mMesGanhos").innerText = `Ganho: R$ ${data.ganhoMes.toFixed(2)}`;
-          document.getElementById("mMesGastos").innerText = `Custo: R$ ${data.gastoMes.toFixed(2)}`;
-          document.getElementById("mRecordeNome").innerText = data.melhorMesNome;
-          document.getElementById("mRecordeValor").innerText = `Faturado: R$ ${data.melhorMesValor.toFixed(2)}`;
+          document.getElementById("mMesLiquido").innerText = `Ganho Líquido: R$ ${liquidoMes.toFixed(2)}`;
+          document.getElementById("mMesGastos").innerText = `Custo Insumos: R$ ${data.gastoMes.toFixed(2)}`;
+          document.getElementById("mMesQtd").innerText = `${totalPedidosMesAtual} ped.`;
+
+          document.getElementById("mRecordeNome").innerText = data.melhorMesNome || "Nenhum";
+          document.getElementById("mRecordeValor").innerText = `Faturado: R$ ${(data.melhorMesValor || 0).toFixed(2)}`;
+          document.getElementById("mRecordeQtd").innerText = totalPedidosMesRecorde !== "✓" ? `${totalPedidosMesRecorde} ped.` : `✓`;
 
           const ctx = document.getElementById('graficoOndas').getContext('2d');
-          let labels = data.vendasMensais.map(v => v.nome); let valores = data.vendasMensais.map(v => v.ganho);
+          let labels = data.vendasMensais.map(v => v.nome); 
+          let valores = data.vendasMensais.map(v => v.ganho);
           if(labels.length === 0) { labels = ["Sem Dados"]; valores = [0]; }
           if (chartInstancia) chartInstancia.destroy();
           chartInstancia = new Chart(ctx, {
@@ -431,10 +607,12 @@
     function mudarAba(aba) {
       if(aba === 'historico') {
         document.getElementById("secaoHistorico").classList.remove('hidden');
+        document.getElementById("secaoHistorico").classList.add('block');
         document.getElementById("secaoAdmin").classList.add('hidden');
         document.getElementById("btnAbaHist").className = "py-3 px-8 font-bold border-b-4 border-amber-950 text-amber-950";
         document.getElementById("btnAbaAdmin").className = "py-3 px-8 font-semibold text-gray-500 border-b-4 border-transparent";
       } else {
+        document.getElementById("secaoHistorico").classList.remove('block');
         document.getElementById("secaoHistorico").classList.add('hidden');
         document.getElementById("secaoAdmin").classList.remove('hidden');
         document.getElementById("btnAbaHist").className = "py-3 px-8 font-semibold text-gray-500 border-b-4 border-transparent";
