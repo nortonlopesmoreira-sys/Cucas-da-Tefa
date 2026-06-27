@@ -55,6 +55,7 @@
               <th class="p-3 border">Cliente</th>
               <th class="p-3 border">Data Entrega</th>
               <th class="p-3 border">Forma Pagamento</th>
+              <th class="p-3 border">Valor</th>
               <th class="p-3 border">Status Pagamento</th>
               <th class="p-3 border">Status Entrega</th>
               <th class="p-3 border">Sabor Cadastrado</th>
@@ -89,6 +90,7 @@
               <th class="p-3 border">Cliente</th>
               <th class="p-3 border">Data Entrega</th>
               <th class="p-3 border">Forma Pagamento</th>
+              <th class="p-3 border">Valor</th>
               <th class="p-3 border">Status Pagamento</th>
               <th class="p-3 border">Status Entrega</th>
               <th class="p-3 border">Sabor Cadastrado</th>
@@ -208,20 +210,21 @@
     };
 
     function carregarDadosIniciais() {
-      fetch(`${API_URL}?acao=listarPedidos`)
-        .then(res => res.json())
-        .then(pedidos => {
-          cachePedidos = pedidos; 
-          renderizarPedidos(); 
-          atualizarDashboard();
-        }).catch(err => console.error("Erro ao carregar pedidos:", err));
-
-      fetch(`${API_URL}?acao=listarPrecos`)
-        .then(res => res.json())
-        .then(precos => {
-          cachePrecos = precos; 
-          renderizarTabelaPrecos();
-        }).catch(err => console.error("Erro ao carregar preços:", err));
+      // Sincroniza o retorno das duas requisições antes de renderizar a tela
+      Promise.all([
+        fetch(`${API_URL}?acao=listarPedidos`).then(res => res.json()),
+        fetch(`${API_URL}?acao=listarPrecos`).then(res => res.json())
+      ])
+      .then(([pedidos, precos]) => {
+        cachePedidos = pedidos;
+        cachePrecos = precos;
+        
+        // Agora, quando renderizarPedidos rodar, cachePrecos já estará populado
+        renderizarTabelaPrecos();
+        renderizarPedidos(); 
+        atualizarDashboard();
+      })
+      .catch(err => console.error("Erro ao carregar os dados:", err));
     }
 
     function formatarDataParaBR(dataBruta) {
@@ -274,13 +277,13 @@
       return 0;
     }
 
-    function renderizarPedidos() {
+function renderizarPedidos() {
       const tabelaAberto = document.getElementById("tabelaPedidosAbertoCorpo");
       const tabelaConcluidos = document.getElementById("tabelaPedidosConcluidosCorpo");
       
       if(!cachePedidos || cachePedidos.length === 0) {
-        tabelaAberto.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido registrado ainda.</td></tr>`;
-        tabelaConcluidos.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido concluído ainda.</td></tr>`;
+        tabelaAberto.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-400">Nenhum pedido registrado ainda.</td></tr>`;
+        tabelaConcluidos.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-400">Nenhum pedido concluído ainda.</td></tr>`;
         document.getElementById("contadorAbertos").innerText = "Total em Aberto: 0 pedidos";
         document.getElementById("contadorConcluidos").innerText = "Total Concluídos: 0 pedidos";
         return;
@@ -289,6 +292,7 @@
       let pedidosEmAbertoArray = [];
       let pedidosConcluidosArray = [];
 
+      // 1. Primeiro nós separamos quem é aberto e quem é concluído
       cachePedidos.forEach(p => {
         let statusPagto = p[5];
         let statusEntrega = p[6];
@@ -300,9 +304,29 @@
         }
       });
 
-      document.getElementById("contadorAbertos").innerText = `Total em Aberto: ${pedidosEmAbertoArray.length} ${pedidosEmAbertoArray.length === 1 ? 'pedido' : 'pedidos'}`;
+      // 2. AGORA SIM, calculamos a soma dos pedidos que estão na lista de abertos
+      let somaAReceber = 0;
+      pedidosEmAbertoArray.forEach(p => {
+        let sabor = p[7] || 'Cuca Comum';
+        let saborLimpo = String(sabor).trim().toLowerCase();
+        let precoEncontrado = cachePrecos.find(item => String(item[0]).trim().toLowerCase() === saborLimpo);
+        
+        if (precoEncontrado) {
+          somaAReceber += Number(precoEncontrado[1]);
+        }
+      });
+
+      let somaFormatada = somaAReceber.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+      // 3. Atualizamos a tela com a soma formatada e a contagem correta
+      document.getElementById("contadorAbertos").innerHTML = `
+        <span class="text-emerald-700 mr-4 font-black">💰 Valores a receber: ${somaFormatada}</span> 
+        <span class="text-amber-900 border-l-2 border-amber-900/30 pl-4">Total em Aberto: ${pedidosEmAbertoArray.length} ${pedidosEmAbertoArray.length === 1 ? 'pedido' : 'pedidos'}</span>
+      `;
+      
       document.getElementById("contadorConcluidos").innerText = `Total Concluídos: ${pedidosConcluidosArray.length} ${pedidosConcluidosArray.length === 1 ? 'pedido' : 'pedidos'}`;
 
+      // 4. Ordenação por data
       pedidosEmAbertoArray.sort((a, b) => {
         return obterTimestampDataEntrega(a[3]) - obterTimestampDataEntrega(b[3]);
       });
@@ -311,10 +335,17 @@
         return obterTimestampDataEntrega(b[3]) - obterTimestampDataEntrega(a[3]);
       });
 
+      // 5. Geração das linhas (Tabela)
       function gerarLinhaHtml(p) {
         let dataEntregaFormatada = formatarDataParaBR(p[3]);
         let statusPagto = p[5];
         let statusEntrega = p[6];
+        let saborAtual = p[7] || 'Cuca Comum';
+
+        let precoEncontrado = cachePrecos.find(item => item[0] === saborAtual);
+        let valorCuca = precoEncontrado ? Number(precoEncontrado[1]) : 0;
+        let valorFormatado = valorCuca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
         return `
           <tr class="border-b hover:bg-amber-50/40 text-xs" id="linha-pedido-${p[0]}">
             <td class="p-3 border text-center">
@@ -327,9 +358,12 @@
             <td class="p-3 border editable-field font-medium" onclick="activarEdicaoInline(${p[0]}, 'CLIENTE', this, '${p[2]}')">${p[2]}</td>
             <td class="p-3 border editable-field text-gray-700 font-semibold" onclick="activarEdicaoDataBR(${p[0]}, 'DATA_ENTREGA', this, '${dataEntregaFormatada}')">${dataEntregaFormatada}</td>
             <td class="p-3 border editable-field" onclick="activarEdicaoSelect(${p[0]}, 'PAGAMENTO', this, '${p[4]}', ['Pix','Crédito','Dinheiro'])">${p[4]}</td>
+            
+            <td class="p-3 border font-bold text-emerald-700 whitespace-nowrap">${valorFormatado}</td>
+
             <td class="p-3 border editable-field font-semibold ${statusPagto === 'Pago' ? 'text-emerald-600':'text-red-500'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_PAGAMENTO', this, '${statusPagto}', ['Pago','Pendente de Pagamento'])">${statusPagto}</td>
             <td class="p-3 border editable-field font-semibold ${statusEntrega === 'Entregue' ? 'text-blue-600':'text-amber-600'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_ENTREGA', this, '${statusEntrega}', ['Encomendada','Entregue'])">${statusEntrega}</td>
-            <td class="p-3 border editable-field italic" onclick="activarEdicaoSelect(${p[0]}, 'SABOR_PL', this, '${p[7] || 'Cuca Comum'}', ['Cuca Comum','Cuca de Banana','Cuca de Goiabada','Cuca de Doce de Leite','Cuca de Chocolate','Mini-Cuca Comum','Mini-Cuca de Banana','Mini-Cuca de Goiabada','Mini-Cuca de Doce de Leite','Mini-Cuca de Chocolate','Sanduiche','Esfirra'])">${p[7] || 'Cuca Comum'}</td>
+            <td class="p-3 border editable-field italic" onclick="activarEdicaoSelect(${p[0]}, 'SABOR_PL', this, '${saborAtual}', ['Cuca Comum','Cuca de Banana','Cuca de Goiabada','Cuca de Doce de Leite','Cuca de Chocolate','Mini-Cuca Comum','Mini-Cuca de Banana','Mini-Cuca de Goiabada','Mini-Cuca de Doce de Leite','Mini-Cuca de Chocolate','Sanduiche','Esfirra'])">${saborAtual}</td>
           </tr>
         `;
       }
@@ -337,8 +371,9 @@
       let htmlAberto = pedidosEmAbertoArray.map(p => gerarLinhaHtml(p)).join('');
       let htmlConcluidos = pedidosConcluidosArray.map(p => gerarLinhaHtml(p)).join('');
 
-      tabelaAberto.innerHTML = htmlAberto || `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido em aberto! Tudo em dia. 🎉</td></tr>`;
-      tabelaConcluidos.innerHTML = htmlConcluidos || `<tr><td colspan="9" class="p-4 text-center text-gray-400">Nenhum pedido finalizado no histórico.</td></tr>`;
+      // Nota: Alterado colspan="9" para colspan="10" para alinhar com as 10 colunas da tabela
+      tabelaAberto.innerHTML = htmlAberto || `<tr><td colspan="10" class="p-4 text-center text-gray-400">Nenhum pedido em aberto! Tudo em dia. 🎉</td></tr>`;
+      tabelaConcluidos.innerHTML = htmlConcluidos || `<tr><td colspan="10" class="p-4 text-center text-gray-400">Nenhum pedido finalizado no histórico.</td></tr>`;
     }
 
     function solicitarExclusao(id, nomeCliente) {
