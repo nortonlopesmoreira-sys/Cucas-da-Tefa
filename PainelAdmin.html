@@ -329,7 +329,7 @@
             <td class="p-3 border editable-field" onclick="activarEdicaoSelect(${p[0]}, 'PAGAMENTO', this, '${p[4]}', ['Pix','Crédito','Dinheiro'])">${p[4]}</td>
             <td class="p-3 border editable-field font-semibold ${statusPagto === 'Pago' ? 'text-emerald-600':'text-red-500'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_PAGAMENTO', this, '${statusPagto}', ['Pago','Pendente de Pagamento'])">${statusPagto}</td>
             <td class="p-3 border editable-field font-semibold ${statusEntrega === 'Entregue' ? 'text-blue-600':'text-amber-600'}" onclick="activarEdicaoSelect(${p[0]}, 'STATUS_ENTREGA', this, '${statusEntrega}', ['Encomendada','Entregue'])">${statusEntrega}</td>
-            <td class="p-3 border editable-field italic" onclick="activarEdicaoSelect(${p[0]}, 'SABOR_PL', this, '${p[7] || 'Cuca Comum'}', ['Cuca Comum','Cuca de Banana','Cuca de Goiabada','Cuca de Doce de Leite','Cuca de Chocolate'])">${p[7] || 'Cuca Comum'}</td>
+            <td class="p-3 border editable-field italic" onclick="activarEdicaoSelect(${p[0]}, 'SABOR_PL', this, '${p[7] || 'Cuca Comum'}', ['Cuca Comum','Cuca de Banana','Cuca de Goiabada','Cuca de Doce de Leite','Cuca de Chocolate','Mini-Cuca Comum','Mini-Cuca de Banana','Mini-Cuca de Goiabada','Mini-Cuca de Doce de Leite','Mini-Cuca de Chocolate','Sanduiche','Esfirra'])">${p[7] || 'Cuca Comum'}</td>
           </tr>
         `;
       }
